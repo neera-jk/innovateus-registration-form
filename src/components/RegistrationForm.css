@@ -1,0 +1,286 @@
+/*
+  Styling for the InnovateUS registration form.
+  Goal: conform to the existing InnovateUS look without cloning their
+  whole site. Key brand cues matched here:
+    - light-blue page background with a white rounded card
+    - the innovate(us) wordmark (navy "innovate", amber "(us)")
+    - a strong brand blue for the button and accents
+    - dark navy bold labels, red asterisks for required fields
+    - a serif heading for the event-series section, like the real site
+  Fonts are loaded from Google Fonts as close approximations of the
+  real site's type. Swap them if you find the exact typefaces.
+*/
+
+@import url("https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&family=Lora:wght@500;600&display=swap");
+
+/* The light-blue area behind everything. */
+.page-background {
+    background-color: #e8f0fb;
+    min-height: 100vh;
+    font-family: "Mulish", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        sans-serif;
+    color: #16234a;
+}
+
+/* Header bar that echoes the InnovateUS site chrome. */
+.site-header {
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 40px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.wordmark {
+    font-size: 26px;
+    font-weight: 700;
+    color: #16234a;
+    letter-spacing: -0.01em;
+}
+
+.wordmark-us {
+    color: #e0a12e;
+}
+
+.site-nav {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #16234a;
+    flex-wrap: wrap;
+}
+
+.nav-updates {
+    border: 1.5px solid #2563eb;
+    color: #2563eb;
+    border-radius: 999px;
+    padding: 9px 20px;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.03em;
+}
+
+/* The white card that holds the whole form. */
+.registration-card {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 860px;
+    margin: 40px auto;
+    border-radius: 16px;
+    padding: 44px;
+    box-shadow: 0 6px 28px rgba(22, 35, 74, 0.08);
+    box-sizing: border-box;
+}
+
+/* The small blue "REGISTRATION DETAILS" label at the top of the card. */
+.section-eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    font-size: 13px;
+    font-weight: 700;
+    color: #2563eb;
+    margin: 0 0 28px 0;
+}
+
+.registration-form {
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+}
+
+/* A row that places two fields side by side on wider screens. */
+.form-row {
+    display: flex;
+    gap: 26px;
+    flex-wrap: wrap;
+}
+
+/* Each field (label + input) stacks vertically and grows to fill its space. */
+.form-field {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 320px;
+    gap: 8px;
+}
+
+/*
+  The Email field sits directly inside .registration-form, which runs
+  vertically (flex-direction: column). Without this rule, the row-oriented
+  "flex: 1 1 320px" above would be read along the vertical axis and stretch
+  the field into a tall empty box. This tells any field placed directly in
+  the column form to size to its content instead.
+  (Fields inside a .form-row are unaffected: their row runs horizontally.)
+*/
+.registration-form>.form-field {
+    flex: 0 0 auto;
+}
+
+.form-field label {
+    font-weight: 700;
+    font-size: 15px;
+    color: #16234a;
+    line-height: 1.45;
+}
+
+.required-star {
+    color: #e0245e;
+}
+
+/* Text boxes and dropdowns share the same look. */
+.form-field input[type="text"],
+.form-field input[type="email"],
+.form-field select {
+    padding: 13px 14px;
+    border: 1px solid #c4d2e8;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    color: #16234a;
+    background-color: #ffffff;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* A clear blue outline when a field is focused, for keyboard accessibility. */
+.form-field input:focus,
+.form-field select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* The event series block. */
+.series-section {
+    border-top: 1px solid #e2e8f2;
+    padding-top: 30px;
+}
+
+/* Serif heading, matching the real site's "Selected Event Series" style. */
+.series-heading {
+    font-family: "Lora", Georgia, serif;
+    font-size: 30px;
+    font-weight: 600;
+    margin: 0 0 6px 0;
+    color: #16234a;
+}
+
+.series-subtext {
+    color: #5a6a8a;
+    margin: 0 0 22px 0;
+    font-size: 15px;
+}
+
+.select-all-button {
+    background-color: #eef3fb;
+    color: #16234a;
+    border: none;
+    border-radius: 8px;
+    padding: 13px 22px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    margin-bottom: 22px;
+}
+
+.select-all-button:hover {
+    background-color: #e2ebf8;
+}
+
+.series-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Each series checkbox sits next to its label text. */
+.series-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 16px;
+    color: #16234a;
+    cursor: pointer;
+    line-height: 1.45;
+}
+
+.series-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    flex-shrink: 0;
+    cursor: pointer;
+    accent-color: #2563eb;
+}
+
+/* The newsletter opt-in row. */
+.newsletter-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    color: #16234a;
+    cursor: pointer;
+    border-top: 1px solid #e2e8f2;
+    padding-top: 26px;
+}
+
+.newsletter-label input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #2563eb;
+}
+
+/* The main blue Register button. */
+.register-button {
+    align-self: center;
+    background-color: #2563eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 15px 52px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.register-button:hover {
+    background-color: #1d4ed8;
+}
+
+.register-button:disabled {
+    background-color: #9db4e0;
+    cursor: not-allowed;
+}
+
+/* On narrow screens, stack everything into single columns. */
+@media (max-width: 700px) {
+    .site-header {
+        padding: 16px 20px;
+    }
+
+    .site-nav {
+        display: none;
+    }
+
+    .registration-card {
+        padding: 24px;
+        margin: 20px 12px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 26px;
+    }
+}

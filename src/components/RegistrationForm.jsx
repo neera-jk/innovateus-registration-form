@@ -35,7 +35,7 @@ const GOV_LEVEL_OPTIONS = [
 const EVENT_SERIES = [
     "Practical Approaches to Evaluating AI for Public Benefit",
     "AI, Energy, and the Environment: Use, Policy, and Tradeoffs",
-    "AI for Public-Sector Procurement",
+    "AI for Public Sector Procurement",
     "Democratic and Public AI: Practical Strategies for Buying, Building, and Governing AI",
     "AI in Public Health",
     "The Good, the Bad and the Ugly of Predictive AI",
@@ -48,6 +48,13 @@ const EVENT_SERIES = [
     "AI and Cybersecurity in the Public Sector for the Non-Expert",
     "The Prompting Lab: Real Prompts, Real Challenges, All Platforms",
 ];
+
+// The Directus API details.
+// The token is read from an environment variable (.env file) so the secret
+// stays out of the source code and out of git. Vite only exposes variables
+// whose names start with VITE_ to the browser.
+const DIRECTUS_URL = "https://burnes-center.directus.app/items/cw_intake";
+const ACCESS_TOKEN = import.meta.env.VITE_DIRECTUS_TOKEN;
 
 // A helper that decides whether the chosen gov_org answer is a "Yes".
 // The gov_level field should only appear for the "Yes" answers.
@@ -159,7 +166,10 @@ function RegistrationForm() {
     }
 
     // Runs when the user clicks Register.
-    function handleSubmit(event) {
+    // This is now an async function because sending data over the internet
+    // takes time, and "await" lets us pause for the response without freezing
+    // the page.
+    async function handleSubmit(event) {
         event.preventDefault();
 
         const errorMessage = getValidationError();
@@ -173,6 +183,7 @@ function RegistrationForm() {
         const workshopSeriesString = selectedSeries.join(", ");
 
         // Assemble the final object that matches the database fields.
+        // We also record consent_at (when they submitted) as an ISO timestamp.
         const finalData = {
             email: formData.email,
             first_name: formData.first_name,
@@ -183,11 +194,48 @@ function RegistrationForm() {
             gov_level: formData.gov_level,
             workshop_series: workshopSeriesString,
             newsletter: formData.newsletter,
+            consent_at: new Date().toISOString(),
         };
 
-        // For now, just print it. Database wiring comes in the next step.
-        console.log("Final data ready to send:", finalData);
-        alert("Form is valid. Data printed to the console. (Database wiring comes next.)");
+        // Show the "submitting" state so the button disables and gives feedback.
+        setSubmitStatus("submitting");
+
+        // try/catch handles the two ways this can go wrong:
+        // 1. the network request itself fails (no internet, server down)
+        // 2. the server responds but rejects our data (validation error, bad token)
+        try {
+            const response = await fetch(DIRECTUS_URL, {
+                method: "POST",
+                headers: {
+                    // Tells the server we are sending JSON.
+                    "Content-Type": "application/json",
+                    // Proves we are allowed to write, using the token from .env.
+                    Authorization: "Bearer " + ACCESS_TOKEN,
+                },
+                // The actual data, converted from a JS object into a JSON string.
+                body: JSON.stringify(finalData),
+            });
+
+            // fetch does NOT throw an error for responses like 400 or 403.
+            // It only throws if the network request could not be made at all.
+            // So we check response.ok ourselves to catch server-side rejections.
+            if (!response.ok) {
+                const errorBody = await response.text();
+                console.error("Directus rejected the submission:", errorBody);
+                setSubmitStatus("error");
+                alert("Something went wrong saving your registration. Please try again.");
+                return;
+            }
+
+            // If we get here, the record was saved successfully.
+            setSubmitStatus("success");
+            alert("Registration submitted successfully. Thank you!");
+        } catch (networkError) {
+            // This runs if the request could not reach the server at all.
+            console.error("Network error while submitting:", networkError);
+            setSubmitStatus("error");
+            alert("Could not reach the server. Please check your connection and try again.");
+        }
     }
 
     return (
